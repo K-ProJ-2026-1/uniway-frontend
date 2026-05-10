@@ -28,7 +28,7 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <IconSymbol size={24} name="house.fill" color={color} />
           ),
         }}
       />
@@ -37,7 +37,7 @@ export default function TabLayout() {
         options={{
           title: "Guide",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <IconSymbol size={24} name="paperplane.fill" color={color} />
           ),
         }}
       />
@@ -46,7 +46,7 @@ export default function TabLayout() {
         options={{
           title: "Chat",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="message.fill" color={color} />
+            <IconSymbol size={24} name="message.fill" color={color} />
           ),
         }}
       />
@@ -55,7 +55,7 @@ export default function TabLayout() {
         options={{
           title: "My",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="person.fill" color={color} />
+            <IconSymbol size={24} name="person.fill" color={color} />
           ),
         }}
       />
