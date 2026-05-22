@@ -1,3 +1,4 @@
+import ControlButtons from "@/components/ui/ControlButtons";
 import FilterItem from "@/components/ui/home/FilterItem";
 import Input from "@/components/ui/Input";
 import { useState } from "react";
@@ -16,6 +17,8 @@ export default function MainScreen() {
         <FilterItem text={"식당"} isSelected={filter === "식당"} />
         <FilterItem text={"기숙사"} isSelected={filter === "기숙사"} />
       </View>
+
+      <ControlButtons />
     </View>
   );
 }
