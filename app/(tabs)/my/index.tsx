@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 const IMAGE_MAP = {
@@ -20,7 +21,10 @@ export default function MyScreen() {
         {/* 상단 헤더 영역 */}
         <View className="w-full h-56 bg-[#D1E1CD] rounded-b-[32px] px-5  flex-row items-center justify-between">
           {/* 뒤로가기 버튼 공간 */}
-          <TouchableOpacity className="h-9 w-9 bg-white/20 rounded-2xl items-center justify-center">
+          <TouchableOpacity
+            onPress={() => router.back()}
+            className="h-9 w-9 bg-white/20 rounded-2xl items-center justify-center"
+          >
             <Image
               source={IMAGE_MAP.back}
               className="h-5 w-5"
@@ -38,7 +42,7 @@ export default function MyScreen() {
             {/* 아바타 */}
             <View className="w-24 h-24 rounded-full p-[3px] bg-gradient-to-br from-green-600 to-lime-100 relative">
               <View className="w-full h-full bg-green-200 rounded-full items-center justify-center">
-                <Text className="text-green-600 text-3xl">김</Text>
+                <Text className="text-green-600 text-3xl">박</Text>
               </View>
               {/* 카메라/수정 아이콘 내부 원 */}
               <View className="w-7 h-7 bg-green-600 rounded-full absolute right-0 bottom-0 items-center justify-center shadow-sm">
@@ -87,7 +91,10 @@ export default function MyScreen() {
           </Text>
           <View className="bg-white rounded-3xl shadow-sm overflow-hidden">
             {/* 언어 설정 */}
-            <TouchableOpacity className="flex-row items-center px-5 py-4 border-b border-gray-100">
+            <TouchableOpacity
+              onPress={() => router.push("/my/language")}
+              className="flex-row items-center px-5 py-4 border-b border-gray-100"
+            >
               <Image
                 source={IMAGE_MAP.language}
                 className="w-8 h-8 mr-4"
