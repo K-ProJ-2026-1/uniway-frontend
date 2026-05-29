@@ -8,6 +8,7 @@ const IMAGE_MAP = {
   settings: require("@/assets/images/setting.png"),
   language: require("@/assets/images/language.png"),
   next: require("@/assets/images/next.png"),
+  login: require("@/assets/images/favicon.png"),
 };
 
 export default function MyScreen() {
@@ -90,6 +91,26 @@ export default function MyScreen() {
             설정
           </Text>
           <View className="bg-white rounded-3xl shadow-sm overflow-hidden">
+            {/* 로그인 */}
+            <TouchableOpacity
+              onPress={() => router.push("/auth/intro")}
+              className="flex-row items-center px-5 py-4"
+            >
+              <Image
+                source={IMAGE_MAP.login}
+                className="w-8 h-8 mr-4"
+                resizeMode="contain"
+              />
+              <View className="flex-1">
+                <Text className="text-black text-sm font-medium">로그인</Text>
+                <Text className="text-zinc-400 text-xs font-medium">login</Text>
+              </View>
+              <Image
+                source={IMAGE_MAP.next}
+                className="w-5 h-5"
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
             {/* 언어 설정 */}
             <TouchableOpacity
               onPress={() => router.push("/my/language")}
