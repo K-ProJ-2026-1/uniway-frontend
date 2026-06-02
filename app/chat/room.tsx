@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const IMAGE_MAP = {
   profile: require("@/assets/images/profile.png"),
@@ -57,6 +58,7 @@ const INITIAL_MESSAGES = [
 ];
 
 export default function ChatRoomScreen() {
+  const insets = useSafeAreaInsets();
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [inputText, setInputText] = useState("");
 
@@ -165,10 +167,11 @@ export default function ChatRoomScreen() {
       </View>
 
       {/* 키보드 대응 래퍼 및 채팅 리스트 영역 */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
-      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={insets.top + 12}
+          className="flex-1"
+        >
         {/* 채팅 내역 리스트 */}
         <FlatList
           data={messages}

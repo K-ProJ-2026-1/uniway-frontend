@@ -8,11 +8,11 @@ export default function GuideScreen() {
 
   return (
     <View className="mx-auto flex-1 bg-[#F5F7F9] pt-10">
-      <View className="min-w-dvw bg-[#ffffff] px-6 py-2">
+      <View className="w-full bg-[#ffffff] px-6 py-2">
         <Text className="text-[24px] font-bold">생활 가이드</Text>
       </View>
       <ScrollView
-        className="min-w-full flex-1 px-4"
+        className="flex-1 w-full px-4"
         contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
       >
         <Text className="px-4 py-4 text-[15px] font-normal text-[#6A7282]">
