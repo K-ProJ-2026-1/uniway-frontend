@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -43,6 +43,12 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="chat/index"
+        listeners={{
+          tabPress: (event) => {
+            event.preventDefault();
+            router.push("/chat/UniversityAuthScreen");
+          },
+        }}
         options={{
           title: "Chat",
           tabBarIcon: ({ color }) => (

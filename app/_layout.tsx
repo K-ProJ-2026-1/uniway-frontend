@@ -26,10 +26,34 @@ export default function RootLayout() {
           name="modal"
           options={{ presentation: "modal", title: "Modal" }}
         />
-        <Stack.Screen name="chat/room" options={{ headerShown: false }} />
-        <Stack.Screen name="auth/intro" options={{ headerShown: false }} />
-        <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-        <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="chat/ChatRoomScreen"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="chat/ProgramScreen"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="chat/UniversityAuthScreen"
+          options={{ headerShown: false }}
+        />{" "}
+        <Stack.Screen
+          name="chat/VerificationResultScreen"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="auth/IntroScreen"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="auth/LoginScreen"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="auth/SignupScreen"
+          options={{ headerShown: false }}
+        />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

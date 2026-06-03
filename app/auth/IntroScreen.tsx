@@ -33,7 +33,7 @@ export default function IntroScreen() {
       <View className="w-full gap-3 pb-6">
         {/* 로그인 버튼 */}
         <TouchableOpacity
-          onPress={() => router.push("/auth/login")}
+          onPress={() => router.push("/auth/LoginScreen")}
           className="w-full h-14 bg-white rounded-2xl items-center justify-center shadow-md"
         >
           <Text className="text-green-600 text-base font-medium">로그인</Text>
@@ -41,7 +41,7 @@ export default function IntroScreen() {
 
         {/* 회원가입 버튼 */}
         <TouchableOpacity
-          onPress={() => router.push("/auth/signup")}
+          onPress={() => router.push("/auth/SignupScreen")}
           className="w-full h-14 bg-white/20 rounded-2xl items-center justify-center border border-white/40"
         >
           <Text className="text-white text-base font-medium">회원가입</Text>

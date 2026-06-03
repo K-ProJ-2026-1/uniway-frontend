@@ -109,7 +109,7 @@ export default function MentorMatchingScreen() {
             {/* 채팅방 입장하기 버튼 */}
             <TouchableOpacity
               onPress={() => {
-                router.push("/chat/room");
+                router.push("/chat/ChatRoomScreen");
               }}
               className="w-full h-14 bg-green-600 rounded-2xl flex-row items-center justify-center gap-2 mt-6 shadow-sm"
             >

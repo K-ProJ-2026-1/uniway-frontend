@@ -93,7 +93,7 @@ export default function MyScreen() {
           <View className="bg-white rounded-3xl shadow-sm overflow-hidden">
             {/* 로그인 */}
             <TouchableOpacity
-              onPress={() => router.push("/auth/intro")}
+              onPress={() => router.push("/auth/IntroScreen")}
               className="flex-row items-center px-5 py-4"
             >
               <Image
