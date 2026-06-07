@@ -1,6 +1,9 @@
+import { useLanguage } from "@/contexts/LanguageContext";
+import { localizeText } from "@/constants/translations";
 import { GuideAccordionItemType, GuideListType } from "@/types/guide/guideType";
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const IMAGE_MAP = {
   CAFETERIA: require("@/assets/images/cafeteria.png"),
@@ -13,26 +16,27 @@ const IMAGE_MAP = {
 
 function GuideAccordion({ section }: { section: GuideAccordionItemType }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const accordionIcon = isOpen
-    ? require("../../../assets/images/top.png")
-    : require("../../../assets/images/bottom.png");
+  const { language } = useLanguage();
 
   return (
-    <View className="flex flex-col border-t border-[#F3F4F6] px-1">
+    <View style={styles.accordionSection}>
       <Pressable
-        className="flex w-full flex-row justify-between py-3"
+        style={styles.accordionTrigger}
         onPress={() => setIsOpen((prev) => !prev)}
       >
-        <Text className="text-[14px] font-bold text-[#101828]">
-          {section.title}
+        <Text style={styles.accordionTitle}>
+          {localizeText(section.title, language)}
         </Text>
-        <Image source={accordionIcon} className="h-6 w-6" />
+        <Ionicons
+          name={isOpen ? "chevron-up" : "chevron-down"}
+          size={18}
+          color="#98A2B3"
+        />
       </Pressable>
       {isOpen && (
-        <View>
-          <Text className="min-h-40 p-1 text-[13px] font-normal text-[#6A7282]">
-            {section.content}
+        <View style={styles.accordionContentWrap}>
+          <Text style={styles.accordionContent}>
+            {localizeText(section.content, language)}
           </Text>
         </View>
       )}
@@ -42,32 +46,33 @@ function GuideAccordion({ section }: { section: GuideAccordionItemType }) {
 
 export default function GuideItem({ item }: { item: GuideListType }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const itemIcon = isOpen
-    ? require("../../../assets/images/bottom.png")
-    : require("../../../assets/images/next.png");
+  const { language } = useLanguage();
 
   return (
-    <View className="rounded-2xl bg-[#ffffff] p-4">
+    <View style={styles.card}>
       <Pressable
-        className="flex flex-row items-center justify-between"
+        style={styles.cardButton}
         onPress={() => setIsOpen((prev) => !prev)}
       >
-        <View className="flex flex-row items-center gap-4">
-          <Image source={IMAGE_MAP[item.type]} className="h-16 w-16" />
-          <View>
-            <Text className="text-[15px] font-bold text-[#101828]">
-              {item.title}
+        <View style={styles.cardContent}>
+          <Image source={IMAGE_MAP[item.type]} style={styles.cardImage} />
+          <View style={styles.textWrap}>
+            <Text style={styles.cardTitle} numberOfLines={1}>
+              {localizeText(item.title, language)}
             </Text>
-            <Text className="text-[12px] font-medium text-[#99A1AF]">
-              {item.description}
+            <Text style={styles.cardDescription}>
+              {localizeText(item.description, language)}
             </Text>
           </View>
         </View>
-        <Image source={itemIcon} className="h-8 w-8" />
+        <Ionicons
+          name={isOpen ? "chevron-down" : "chevron-forward"}
+          size={24}
+          color="#A8B2C1"
+        />
       </Pressable>
       {isOpen && (
-        <View className="mt-4">
+        <View style={styles.accordionList}>
           {item.sections.map((section) => (
             <GuideAccordion key={section.id} section={section} />
           ))}
@@ -76,3 +81,81 @@ export default function GuideItem({ item }: { item: GuideListType }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    width: "100%",
+    overflow: "hidden",
+    borderRadius: 30,
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 18,
+    paddingVertical: 13,
+  },
+  cardButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 14,
+  },
+  cardContent: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    paddingRight: 10,
+  },
+  cardImage: {
+    width: 62,
+    height: 62,
+    borderRadius: 20,
+  },
+  textWrap: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  cardTitle: {
+    fontSize: 17,
+    fontWeight: "800",
+    color: "#111827",
+  },
+  cardDescription: {
+    marginTop: 6,
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: "600",
+    color: "#98A2B3",
+  },
+  accordionList: {
+    marginTop: 18,
+    borderTopWidth: 1,
+    borderTopColor: "#EEF2F6",
+    paddingTop: 2,
+  },
+  accordionSection: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#F2F4F7",
+  },
+  accordionTrigger: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    paddingVertical: 14,
+  },
+  accordionTitle: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#1F2937",
+    lineHeight: 20,
+  },
+  accordionContentWrap: {
+    paddingRight: 4,
+    paddingBottom: 14,
+  },
+  accordionContent: {
+    fontSize: 13,
+    lineHeight: 20,
+    color: "#6B7280",
+  },
+});

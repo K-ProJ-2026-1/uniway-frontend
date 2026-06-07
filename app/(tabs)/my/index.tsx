@@ -1,5 +1,8 @@
 import { router } from "expo-router";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { getLanguageDisplayName } from "@/constants/translations";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const IMAGE_MAP = {
   back: require("@/assets/images/back.png"),
@@ -11,20 +14,75 @@ const IMAGE_MAP = {
   login: require("@/assets/images/favicon.png"),
 };
 
+const COPY = {
+  ko: {
+    guestName: "게스트 사용자",
+    guestSubtitle: "로그인 후 개인 설정과 계정 정보를 확인할 수 있어요.",
+    profileName: "김하린",
+    profileSubtitle: "소프트웨어공학과 22학번",
+    loginTitle: "로그인",
+    loginSubtitle: "테스트 계정으로 로그인",
+    accountSubtitle: "현재 로그인됨",
+    languageSubtitle: "앱 언어 변경",
+    settingsSubtitle: "앱 기본 설정",
+    logoutSubtitle: "현재 계정에서 로그아웃",
+  },
+  en: {
+    guestName: "Guest User",
+    guestSubtitle: "Sign in to manage your account and personal settings.",
+    profileName: "Kim Harin",
+    profileSubtitle: "Software Engineering, class of 2022",
+    loginTitle: "Sign in",
+    loginSubtitle: "Use the demo account",
+    accountSubtitle: "Currently signed in",
+    languageSubtitle: "Change app language",
+    settingsSubtitle: "App preferences",
+    logoutSubtitle: "Sign out of this account",
+  },
+  zh: {
+    guestName: "访客用户",
+    guestSubtitle: "登录后即可查看账号信息并管理个人设置。",
+    profileName: "金夏琳",
+    profileSubtitle: "软件工程专业 2022级",
+    loginTitle: "登录",
+    loginSubtitle: "使用测试账号登录",
+    accountSubtitle: "当前已登录",
+    languageSubtitle: "更改应用语言",
+    settingsSubtitle: "应用基础设置",
+    logoutSubtitle: "退出当前账号",
+  },
+} as const;
+
 export default function MyScreen() {
+  const { language, t } = useLanguage();
+  const { isAuthenticated, logout, user } = useAuth();
+  const copy = COPY[language];
+  const userName = isAuthenticated ? copy.profileName : copy.guestName;
+  const userSubtitle = isAuthenticated ? copy.profileSubtitle : copy.guestSubtitle;
+
+  const handleLoginPress = () => {
+    if (isAuthenticated) {
+      return;
+    }
+
+    router.push("/auth/login");
+  };
+
+  const handleLogoutPress = () => {
+    logout();
+    router.replace("/auth/login");
+  };
+
   return (
-    <View className="flex-1 bg-gray-50 relative">
-      {/* 메인 스크롤 콘텐츠 */}
+    <View className="relative flex-1 bg-gray-50">
       <ScrollView
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* 상단 헤더 영역 */}
-        <View className="w-full h-56 bg-[#D1E1CD] rounded-b-[32px] px-5  flex-row items-center justify-between">
-          {/* 뒤로가기 버튼 공간 */}
+        <View className="h-56 w-full flex-row items-center justify-between rounded-b-[32px] bg-[#D1E1CD] px-5">
           <TouchableOpacity
             onPress={() => router.back()}
-            className="h-9 w-9 bg-white/20 rounded-2xl items-center justify-center"
+            className="h-9 w-9 items-center justify-center rounded-2xl bg-white/20"
           >
             <Image
               source={IMAGE_MAP.back}
@@ -32,169 +90,197 @@ export default function MyScreen() {
               resizeMode="contain"
             />
           </TouchableOpacity>
-
-          {/* 우측 밸런스용 공백 (왼쪽 버튼과 대칭을 맞추기 위함) */}
           <View className="w-9" />
         </View>
 
-        {/* 프로필 카드 영역 */}
-        <View className="px-5 -mt-20">
-          <View className="w-full bg-white rounded-3xl p-6 shadow-md items-center">
-            {/* 아바타 */}
-            <View className="w-24 h-24 rounded-full p-[3px] bg-gradient-to-br from-green-600 to-lime-100 relative">
-              <View className="w-full h-full bg-green-200 rounded-full items-center justify-center">
-                <Text className="text-green-600 text-3xl">박</Text>
+        <View className="-mt-20 px-5">
+          <View className="w-full items-center rounded-3xl bg-white p-6 shadow-md">
+            <View className="relative h-24 w-24 rounded-full bg-green-200 p-[3px]">
+              <View className="h-full w-full items-center justify-center rounded-full bg-green-100">
+                <Text className="text-3xl text-green-600">
+                  {isAuthenticated ? copy.profileName[0] : "G"}
+                </Text>
               </View>
-              {/* 카메라/수정 아이콘 내부 원 */}
-              <View className="w-7 h-7 bg-green-600 rounded-full absolute right-0 bottom-0 items-center justify-center shadow-sm">
+              <View className="absolute bottom-0 right-0 h-7 w-7 items-center justify-center rounded-full bg-green-600 shadow-sm">
                 <Image
                   source={IMAGE_MAP.camera}
-                  className="w-3.5 h-3.5"
+                  className="h-3.5 w-3.5"
                   resizeMode="contain"
                 />
               </View>
             </View>
 
-            {/* 이름 및 학과 */}
-            <Text className="text-black text-lg font-normal mt-4">박예원</Text>
-            <Text className="text-neutral-400 text-xs font-normal mt-1">
-              소프트웨어학과 22학번
+            <Text className="mt-4 text-lg font-medium text-black">
+              {userName}
+            </Text>
+            <Text className="mt-1 text-center text-xs font-normal text-neutral-400">
+              {userSubtitle}
             </Text>
 
-            {/* 구분선 및 카운터 정보 */}
-            <View className="w-full flex-row mt-6 border-t border-gray-100 pt-4">
+            {isAuthenticated && (
+              <Text className="mt-2 text-xs font-medium text-green-700">
+                ID: {user?.id}
+              </Text>
+            )}
+
+            <View className="mt-6 w-full flex-row border-t border-gray-100 pt-4">
               <View className="flex-1 items-center border-r border-gray-100">
-                <Text className="text-green-600 text-lg font-normal">1</Text>
-                <Text className="text-neutral-400 text-xs font-normal mt-1">
-                  멘토링
+                <Text className="text-lg font-normal text-green-600">
+                  {isAuthenticated ? "1" : "-"}
+                </Text>
+                <Text className="mt-1 text-xs font-normal text-neutral-400">
+                  {t("my.mentoring")}
                 </Text>
               </View>
               <View className="flex-1 items-center border-r border-gray-100">
-                <Text className="text-green-600 text-lg font-normal">5</Text>
-                <Text className="text-neutral-400 text-xs font-normal mt-1">
-                  북마크
+                <Text className="text-lg font-normal text-green-600">
+                  {isAuthenticated ? "5" : "-"}
+                </Text>
+                <Text className="mt-1 text-xs font-normal text-neutral-400">
+                  {t("my.bookmark")}
                 </Text>
               </View>
               <View className="flex-1 items-center">
-                <Text className="text-green-600 text-lg font-normal">32</Text>
-                <Text className="text-neutral-400 text-xs font-normal mt-1">
-                  활동일
+                <Text className="text-lg font-normal text-green-600">
+                  {isAuthenticated ? "32" : "-"}
+                </Text>
+                <Text className="mt-1 text-xs font-normal text-neutral-400">
+                  {t("my.activeDays")}
                 </Text>
               </View>
             </View>
           </View>
         </View>
 
-        {/* 설정 섹션 */}
-        <View className="px-5 mt-6">
-          <Text className="text-neutral-400 text-xs font-normal pl-1 mb-2">
-            설정
+        <View className="mt-6 px-5">
+          <Text className="mb-2 pl-1 text-xs font-normal text-neutral-400">
+            {t("my.settings")}
           </Text>
-          <View className="bg-white rounded-3xl shadow-sm overflow-hidden">
-            {/* 로그인 */}
+          <View className="overflow-hidden rounded-3xl bg-white shadow-sm">
             <TouchableOpacity
-              onPress={() => router.push("/auth/intro")}
-              className="flex-row items-center px-5 py-4"
+              onPress={handleLoginPress}
+              disabled={isAuthenticated}
+              className="flex-row items-center border-b border-gray-100 px-5 py-4"
             >
               <Image
                 source={IMAGE_MAP.login}
-                className="w-8 h-8 mr-4"
+                className="mr-4 h-8 w-8"
                 resizeMode="contain"
               />
               <View className="flex-1">
-                <Text className="text-black text-sm font-medium">로그인</Text>
-                <Text className="text-zinc-400 text-xs font-medium">login</Text>
+                <Text className="text-sm font-medium text-black">
+                  {isAuthenticated ? copy.profileName : copy.loginTitle}
+                </Text>
+                <Text className="text-xs font-medium text-zinc-400">
+                  {isAuthenticated ? copy.accountSubtitle : copy.loginSubtitle}
+                </Text>
               </View>
               <Image
                 source={IMAGE_MAP.next}
-                className="w-5 h-5"
+                className="h-5 w-5"
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            {/* 언어 설정 */}
+
             <TouchableOpacity
               onPress={() => router.push("/my/language")}
-              className="flex-row items-center px-5 py-4 border-b border-gray-100"
+              className="flex-row items-center border-b border-gray-100 px-5 py-4"
             >
               <Image
                 source={IMAGE_MAP.language}
-                className="w-8 h-8 mr-4"
+                className="mr-4 h-8 w-8"
                 resizeMode="contain"
               />
               <View className="flex-1">
-                <Text className="text-black text-sm font-medium">
-                  언어 설정
+                <Text className="text-sm font-medium text-black">
+                  {t("my.language")}
                 </Text>
-                <Text className="text-zinc-400 text-xs font-medium">
-                  Language
+                <Text className="text-xs font-medium text-zinc-400">
+                  {getLanguageDisplayName(language)}
+                  {" · "}
+                  {copy.languageSubtitle}
                 </Text>
               </View>
               <Image
                 source={IMAGE_MAP.next}
-                className="w-5 h-5"
+                className="h-5 w-5"
                 resizeMode="contain"
               />
             </TouchableOpacity>
 
-            {/* 일반 설정 */}
             <TouchableOpacity className="flex-row items-center px-5 py-4">
               <Image
                 source={IMAGE_MAP.settings}
-                className="w-8 h-8 mr-4"
+                className="mr-4 h-8 w-8"
                 resizeMode="contain"
               />
               <View className="flex-1">
-                <Text className="text-black text-sm font-medium">설정</Text>
-                <Text className="text-zinc-400 text-xs font-medium">
-                  Settings
+                <Text className="text-sm font-medium text-black">
+                  {t("my.settings")}
+                </Text>
+                <Text className="text-xs font-medium text-zinc-400">
+                  {copy.settingsSubtitle}
                 </Text>
               </View>
               <Image
                 source={IMAGE_MAP.next}
-                className="w-5 h-5"
+                className="h-5 w-5"
                 resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* 앱 정보 섹션 */}
-        <View className="px-5 mt-6">
-          <Text className="text-neutral-400 text-xs font-normal pl-1 mb-2">
-            앱 정보
+        <View className="mt-6 px-5">
+          <Text className="mb-2 pl-1 text-xs font-normal text-neutral-400">
+            {t("my.appInfo")}
           </Text>
-          <View className="bg-white rounded-3xl shadow-sm overflow-hidden">
-            <View className="flex-row justify-between items-center px-5 py-4 border-b border-gray-100">
-              <Text className="text-black text-sm font-normal">버전</Text>
-              <Text className="text-neutral-400 text-sm font-normal">
-                1.0.0
+          <View className="overflow-hidden rounded-3xl bg-white shadow-sm">
+            <View className="flex-row items-center justify-between border-b border-gray-100 px-5 py-4">
+              <Text className="text-sm font-normal text-black">
+                {t("my.version")}
               </Text>
+              <Text className="text-sm font-normal text-neutral-400">1.0.0</Text>
             </View>
-            <View className="flex-row justify-between items-center px-5 py-4">
-              <Text className="text-black text-sm font-normal">
-                최종 업데이트
+            <View className="flex-row items-center justify-between px-5 py-4">
+              <Text className="text-sm font-normal text-black">
+                {t("my.updatedAt")}
               </Text>
-              <Text className="text-neutral-400 text-sm font-normal">
-                2026.04.18
+              <Text className="text-sm font-normal text-neutral-400">
+                2026.06.08
               </Text>
             </View>
           </View>
         </View>
 
-        {/* 로그아웃 버튼 */}
-        <View className="px-5 mt-6">
-          <TouchableOpacity className="w-full bg-white rounded-3xl p-4 flex-row items-center shadow-sm">
+        <View className="mt-6 px-5">
+          <TouchableOpacity
+            onPress={handleLogoutPress}
+            disabled={!isAuthenticated}
+            className={`w-full flex-row items-center rounded-3xl p-4 shadow-sm ${
+              isAuthenticated ? "bg-white" : "bg-gray-100"
+            }`}
+          >
             <Image
               source={IMAGE_MAP.logout}
-              className="w-8 h-8 mr-4"
+              className="mr-4 h-8 w-8"
               resizeMode="contain"
             />
-            <Text className="flex-1 text-red-400 text-sm font-medium">
-              로그아웃
-            </Text>
+            <View className="flex-1">
+              <Text
+                className={`text-sm font-medium ${
+                  isAuthenticated ? "text-red-400" : "text-neutral-400"
+                }`}
+              >
+                {t("my.logout")}
+              </Text>
+              <Text className="mt-1 text-xs font-medium text-zinc-400">
+                {copy.logoutSubtitle}
+              </Text>
+            </View>
             <Image
               source={IMAGE_MAP.next}
-              className="w-5 h-5 "
+              className="h-5 w-5"
               resizeMode="contain"
             />
           </TouchableOpacity>

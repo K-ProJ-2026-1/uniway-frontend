@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -10,21 +10,35 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageCode } from "@/types/i18n";
 
 const IMAGE_MAP = {
   back: require("@/assets/images/back.png"),
   search: require("@/assets/images/search.png"),
 };
 
-const LANGUAGES = [
-  { id: "zh", name: "중국어", nativeName: "中文", flag: "🇨🇳" },
-  { id: "en", name: "영어", nativeName: "English", flag: "🇺🇸" },
-  { id: "ko", name: "한국어", nativeName: "한국어", flag: "🇰🇷" },
+const LANGUAGES: Array<{
+  id: LanguageCode;
+  name: string;
+  nativeName: string;
+  flag: string;
+}> = [
+  { id: "ko", name: "Korean", nativeName: "한국어", flag: "KR" },
+  { id: "en", name: "English", nativeName: "English", flag: "EN" },
+  { id: "zh", name: "Chinese", nativeName: "中文", flag: "ZH" },
 ];
 
 export default function LanguageScreen() {
-  const [selectedLanguage, setSelectedLanguage] = useState("ko");
+  const insets = useSafeAreaInsets();
+  const { language, setLanguage, t } = useLanguage();
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(language);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    setSelectedLanguage(language);
+  }, [language]);
 
   const filteredLanguages = useMemo(() => {
     const keyword = searchQuery.trim().toLowerCase();
@@ -33,13 +47,19 @@ export default function LanguageScreen() {
       return LANGUAGES;
     }
 
-    return LANGUAGES.filter((language) => {
+    return LANGUAGES.filter((item) => {
       return (
-        language.name.toLowerCase().includes(keyword) ||
-        language.nativeName.toLowerCase().includes(keyword)
+        item.name.toLowerCase().includes(keyword) ||
+        item.nativeName.toLowerCase().includes(keyword) ||
+        item.id.includes(keyword)
       );
     });
   }, [searchQuery]);
+
+  const handleApply = () => {
+    setLanguage(selectedLanguage);
+    router.back();
+  };
 
   return (
     <KeyboardAvoidingView
@@ -47,7 +67,10 @@ export default function LanguageScreen() {
       style={{ flex: 1 }}
     >
       <View className="flex-1 bg-white">
-        <View className="w-full flex-row items-center px-6 pb-4 pt-12">
+        <View
+          className="w-full flex-row items-center px-6 pb-4"
+          style={{ paddingTop: insets.top + 12 }}
+        >
           <TouchableOpacity
             onPress={() => router.back()}
             className="h-9 w-9 items-center justify-center rounded-2xl bg-gray-100"
@@ -63,7 +86,7 @@ export default function LanguageScreen() {
 
         <View className="px-5 py-3">
           <View className="self-start rounded-2xl bg-stone-200 px-5 py-3">
-            <Text className="text-base font-normal text-black">언어 선택</Text>
+            <Text className="text-base font-normal text-black">{t("language.title")}</Text>
           </View>
         </View>
 
@@ -71,7 +94,7 @@ export default function LanguageScreen() {
           <View className="h-14 w-full flex-row items-center justify-between rounded-2xl bg-zinc-100 px-5">
             <TextInput
               className="h-full flex-1 text-base text-black"
-              placeholder="언어 검색"
+              placeholder={t("language.search")}
               placeholderTextColor="#9ca3af"
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -87,29 +110,29 @@ export default function LanguageScreen() {
 
         <ScrollView
           className="flex-1"
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 110 }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {filteredLanguages.map((language) => {
-            const isSelected = selectedLanguage === language.id;
+          {filteredLanguages.map((item) => {
+            const isSelected = selectedLanguage === item.id;
 
             return (
               <TouchableOpacity
-                key={language.id}
-                onPress={() => setSelectedLanguage(language.id)}
+                key={item.id}
+                onPress={() => setSelectedLanguage(item.id)}
                 className={`h-14 w-full flex-row items-center justify-between border-b border-gray-50 px-5 ${
                   isSelected ? "bg-green-50" : "bg-zinc-50/50"
                 }`}
               >
                 <View className="flex-row items-center gap-6">
                   <View className="h-9 w-9 items-center justify-center rounded-full bg-zinc-200">
-                    <Text className="text-xl">{language.flag}</Text>
+                    <Text className="text-xs font-bold text-zinc-700">{item.flag}</Text>
                   </View>
                   <View className="flex-row items-baseline gap-2">
-                    <Text className="text-base font-medium text-black">{language.name}</Text>
+                    <Text className="text-base font-medium text-black">{item.name}</Text>
                     <Text className="text-sm font-medium text-gray-400">
-                      {language.nativeName}
+                      {item.nativeName}
                     </Text>
                   </View>
                 </View>
@@ -126,15 +149,23 @@ export default function LanguageScreen() {
           {filteredLanguages.length === 0 && (
             <View className="px-5 py-10">
               <Text className="text-center text-sm text-gray-400">
-                검색 결과가 없습니다.
+                {t("language.empty")}
               </Text>
             </View>
           )}
         </ScrollView>
 
-        <View className="absolute bottom-6 left-0 right-0 bg-white px-5 pt-2">
-          <TouchableOpacity className="h-12 w-full items-center justify-center rounded-2xl bg-green-600 shadow-sm">
-            <Text className="text-center text-base font-medium text-white">확인</Text>
+        <View
+          className="absolute left-0 right-0 bg-white px-5 pt-2"
+          style={{ bottom: Math.max(insets.bottom, 16) }}
+        >
+          <TouchableOpacity
+            onPress={handleApply}
+            className="h-12 w-full items-center justify-center rounded-2xl bg-green-600 shadow-sm"
+          >
+            <Text className="text-center text-base font-medium text-white">
+              {t("language.confirm")}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

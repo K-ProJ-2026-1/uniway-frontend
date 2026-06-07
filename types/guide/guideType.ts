@@ -1,3 +1,5 @@
+import { LocalizedText } from "@/types/i18n";
+
 export type GuideType =
   | "CAFETERIA"
   | "LIBRARY"
@@ -8,14 +10,14 @@ export type GuideType =
 
 export interface GuideAccordionItemType {
   id: number;
-  title: string;
-  content: string;
+  title: LocalizedText;
+  content: LocalizedText;
 }
 
 export interface GuideListType {
   id: number;
   type: GuideType;
-  title: string;
-  description: string;
+  title: LocalizedText;
+  description: LocalizedText;
   sections: GuideAccordionItemType[];
 }

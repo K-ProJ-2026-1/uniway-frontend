@@ -1,12 +1,20 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { isAuthenticated } = useAuth();
+  const { t } = useLanguage();
+
+  if (!isAuthenticated) {
+    return <Redirect href="/auth/login" />;
+  }
 
   return (
     <Tabs
@@ -26,7 +34,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="main/index"
         options={{
-          title: "Home",
+          title: t("tab.home"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={24} name="house.fill" color={color} />
           ),
@@ -35,7 +43,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="guide/index"
         options={{
-          title: "Guide",
+          title: t("tab.guide"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={24} name="paperplane.fill" color={color} />
           ),
@@ -44,7 +52,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="chat/index"
         options={{
-          title: "Chat",
+          title: t("tab.chat"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={24} name="message.fill" color={color} />
           ),
@@ -53,7 +61,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my/index"
         options={{
-          title: "My",
+          title: t("tab.my"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={24} name="person.fill" color={color} />
           ),
